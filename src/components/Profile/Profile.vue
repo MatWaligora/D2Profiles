@@ -1,8 +1,8 @@
 <template>
   <div class="container">
-    <div class="column main-content" v-if="profile.displayName">
-      <h1 class="is-size-1">Your profile: {{profile.displayName}}</h1>
-      <h4 class="is-size-4">Motto: {{profile.about}}</h4>
+    <div class="column main-content" v-if="account.displayName">
+      <h1 class="is-size-1">Your account: {{account.displayName}}</h1>
+      <h4 class="is-size-4">Motto: {{account.about}}</h4>
     </div>
   </div>
 </template>
@@ -10,7 +10,7 @@
 <script>
   import { mapGetters } from 'vuex';
   import { mapMutations } from 'vuex';
-
+  import Character from './Character/Character.vue';
   import API from '../../endpointsMixin.vue';
 
   export default {
@@ -20,17 +20,24 @@
       }
     },
     computed: {
-      ...mapGetters({profile: 'getProfile'}),
+      ...mapGetters({account: 'getAccount'}),
     },
     mixins: [API],
+    components: {
+      Character
+    },
     methods: {
-      ...mapMutations(['updateProfile', 'updateDestinyMemberships', 'updateLoader']),
+      ...mapMutations([
+        'updateAccount',
+        'updateDestinyMemberships',
+        'updateLoader',
+        'updateUserProfile']),
       getBungieUser() {
         this.updateLoader(true);
         this.GetMembershipDataForCurrentUser().then(res => {
             let body = res.body.Response;
             console.log('GetMembershipDataForCurrentUser', body);
-            this.updateProfile(body.bungieNetUser);
+            this.updateAccount(body.bungieNetUser);
             this.updateDestinyMemberships(body.destinyMemberships);
             this.fetchAllPlayerData();
           }
@@ -40,9 +47,10 @@
         Promise.all([
           this.GetDestinyManifest(),
           this.SearchDestinyPlayer(),
-          this.GetProfile()
+          this.GetProfile(),
         ]).then(res => {
           console.log(res);
+          this.updateUserProfile(res[2].body.Response);
           this.updateLoader(false);
         });
       }
@@ -55,6 +63,6 @@
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="scss">
- @import "../../../node_modules/bulma/sass/utilities/variables";
+  @import "../../../node_modules/bulma/sass/utilities/variables";
 
 </style>

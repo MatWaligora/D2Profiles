@@ -1,7 +1,7 @@
 import { secrets } from '../../secrets';
 
 const state = {
-  profile: {},
+  account: {},
   destinyMemberships: [],
   loggedIn: false,
   client_id: secrets.client_id,
@@ -10,8 +10,8 @@ const state = {
 };
 
 const getters = {
-  getProfile: state => {
-    return state.profile;
+  getAccount: state => {
+    return state.account;
   },
   getLoggedIn: state => {
     return state.loggedIn;
@@ -34,8 +34,8 @@ const getters = {
 };
 
 const mutations = {
-  updateProfile (state, payload) {
-    state.profile = payload;
+  updateAccount (state, payload) {
+    state.account = payload;
   },
   updateDestinyMemberships (state, payload) {
     state.destinyMemberships = payload;

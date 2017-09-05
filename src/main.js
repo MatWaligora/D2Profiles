@@ -11,7 +11,6 @@ Vue.config.productionTip = false;
 Vue.use(VueResource);
 
 Vue.http.interceptors.push((request, next) => {
-  console.log(request);
   request.headers.set('X-API-KEY', secrets.apiKey);
   request.credentials = true;
   if(request.url.match('https')) {

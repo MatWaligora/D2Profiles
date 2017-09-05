@@ -22,7 +22,7 @@
     },
     computed: {
       ...mapGetters({
-        profile: 'getProfile',
+        account: 'getAccount',
         loggedIn: 'getLoggedIn',
         client_id: 'client_id',
         client_secret: 'getClientSecret',
