@@ -1,24 +1,31 @@
 <template>
   <div class="section">
     <div class="container">
-      <div class="tabs">
+      <h4 class="is-size-4">Characters</h4>
+      <div class="tabs is-large">
         <ul>
-          <li v-for="number in userProfile.characters.data.length"><a href="" @click="selectedCharacterIndex = number"></a></li>
+          <li :class="[{'is-active': selectedCharacterKey === key}]" v-for="(character, key, index) in characters">
+            <a  @click="selectedCharacterKey = key">
+            {{classTypes[character.classType]}}
+          </a>
+          </li>
         </ul>
       </div>
       <div class="columns">
-        <div class="column" v-for="(character, index) in userProfile.characters.data" v-if="index === selectedCharacterIndex">
-          <p class="character-data">Total playtime: {{character.minutesPlayedTotal}}</p>
+        <div class="column" v-for="(character, key, index) in characters" v-if="key === selectedCharacterKey">
+          <h5 class="is-size-5">
+            {{classTypes[character.classType]}}
+          </h5>
+          <p class="character-data">Total playtime: {{(character.minutesPlayedTotal / 60).toFixed(0)}} hours {{(character.minutesPlayedTotal % 60)}} minutes</p>
           <p class="character-data" v-if="character.minutesPlayedThisSession > 0">
-            This session playtime: {{character.minutesPlayedThisSession}}
+            Last session playtime: {{character.minutesPlayedThisSession}}
           </p>
           <p class="character-data">Power: {{character.light}}</p>
           <p class="character-data">Level: {{character.baseCharacterLevel}}</p>
-          <p class="character-data">Percent to next level: {{character.percentToNextLevel}}</p>
         </div>
         <div class="column">
           <h4 class="is-size-4">Inventory</h4>
-
+          <inventory :items="characterInventory" v-if="selectedCharacterKey != ''"></inventory>
         </div>
       </div>
     </div>
@@ -27,22 +34,43 @@
 
 <script type="text/babel">
   import { mapGetters } from 'vuex';
+  import Inventory from './Inventory/Inventory.vue';
   export default {
     name: 'Character',
     data() {
       return {
-        selectedCharacterIndex: 0
+        selectedCharacterKey: '',
+        classTypes: {
+          0: 'Warlock',
+          1: 'Hunter',
+          2: 'Titan',
+        }
       }
+    },
+    components: {
+      Inventory
     },
     computed: {
       ...mapGetters({
         userProfile: 'getUserProfile',
-        account: 'getAccount'
       }),
+      characters() {
+        return this.userProfile.characters.data;
+      },
+      characterInventory() {
+        return this.userProfile.characterInventories.data[this.selectedCharacterKey].items;
+      }
     }
   }
 </script>
 
 <style lang="scss" scoped>
+  .section {
+    color: white;
+  }
 
+  .list-item {
+    cursor: pointer;
+    padding: 10px;
+  }
 </style>

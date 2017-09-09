@@ -4,6 +4,7 @@
       <h1 class="is-size-1">Your account: {{account.displayName}}</h1>
       <h4 class="is-size-4">Motto: {{account.about}}</h4>
     </div>
+    <character  v-if="userProfile.characters"></character>
   </div>
 </template>
 
@@ -20,7 +21,10 @@
       }
     },
     computed: {
-      ...mapGetters({account: 'getAccount'}),
+      ...mapGetters({
+        account: 'getAccount',
+        userProfile: 'getUserProfile',
+      }),
     },
     mixins: [API],
     components: {
@@ -47,10 +51,11 @@
         Promise.all([
           this.GetDestinyManifest(),
           this.SearchDestinyPlayer(),
+          this.GetPublicMilestones(),
           this.GetProfile(),
         ]).then(res => {
           console.log(res);
-          this.updateUserProfile(res[2].body.Response);
+          this.updateUserProfile(res[3].body.Response);
           this.updateLoader(false);
         });
       }

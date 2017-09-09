@@ -4,7 +4,7 @@
     data() {
       return {
         url: 'https://www.bungie.net/Platform',
-
+        platform: '254'
       }
     },
     computed: {
@@ -25,7 +25,14 @@
         return this.$http.get(`${this.url}/Destiny2/SearchDestinyPlayer/${this.membership[0].membershipType}/${this.account.displayName}/`, this.getOptions());
       },
       GetProfile(membershipType) {
-        return this.$http.get(`${this.url}/Destiny2/${this.membership[0].membershipType}/Profile/${this.membership[0].membershipId}/`, this.getOptions());
+        let headers = this.getOptions();
+        headers.params = {
+        components: '101,102,103,200,201,202,203,204,205,300,301,302,303,304,305,306,307,308,400,401,402,500'
+        }
+        return this.$http.get(`${this.url}/Destiny2/${this.membership[0].membershipType}/Profile/${this.membership[0].membershipId}/`, headers);
+      },
+      GetMembershipsById() {
+        return this.$http.get(`${this.url}/User/GetMembershipsById/${this.account.membershipId}/254/`)
       },
       GetCharacter(membershipType, characterId) {
         return this.$http.get(`${this.url}/Destiny2/${membershipType}/Profile/${this.account.membershipId}/Character/${characterId}/`, this.getOptions());
@@ -100,7 +107,7 @@
         return this.$http.get(`${this.url}/Destiny2/Milestones/${milestoneHash}/Content/`, this.getOptions());
       },
       GetPublicMilestones() {
-        return this.$http.get(this.$http.get(`${this.url}/Destiny2/Milestones/`, this.getOptions()));
+        return this.$http.get(`${this.url}/Destiny2/Milestones/`, this.getOptions());
       },
       GetCurrentBungieNetUser() {
         return this.$http.get(`${this.url}/User/GetCurrentBungieNetUser/`, this.getOptions());
